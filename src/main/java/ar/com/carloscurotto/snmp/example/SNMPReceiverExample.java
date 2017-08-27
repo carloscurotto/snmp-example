@@ -36,7 +36,7 @@ public class SNMPReceiverExample implements CommandResponder {
         SNMPReceiverExample receiver = new SNMPReceiverExample();
         try
         {
-            receiver.listen(new UdpAddress("localhost/" + getPort()));
+            receiver.listen(new UdpAddress(getHost() + "/" + getPort()));
             //receiver.listen(new TcpAddress("localhost/9899"));
         }
         catch (IOException e)
@@ -44,6 +44,10 @@ public class SNMPReceiverExample implements CommandResponder {
             System.err.println("Error in Listening for Trap");
             System.err.println("Exception Message = " + e.getMessage());
         }
+    }
+
+    public String getHost() {
+        return System.getProperty("snmp-host");
     }
 
     public String getPort() {
