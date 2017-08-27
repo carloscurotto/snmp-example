@@ -21,19 +21,33 @@ import org.snmp4j.util.ThreadPool;
 
 import java.io.IOException;
 
-public class SNMPExample implements CommandResponder {
+public class SNMPReceiverExample implements CommandResponder {
+
+    public static void main(String[] args) throws Exception {
+        SNMPReceiverExample example = new SNMPReceiverExample();
+        example.run();
+    }
 
     public void run() {
-        SNMPExample receiver = new SNMPExample();
+        SNMP4JSettings.setAllowSNMPv2InV1(true);
+
+        String port = getPort();
+
+        SNMPReceiverExample receiver = new SNMPReceiverExample();
         try
         {
-            receiver.listen(new UdpAddress("localhost/162"));
+            receiver.listen(new UdpAddress("localhost/" + getPort()));
+            //receiver.listen(new TcpAddress("localhost/9899"));
         }
         catch (IOException e)
         {
             System.err.println("Error in Listening for Trap");
             System.err.println("Exception Message = " + e.getMessage());
         }
+    }
+
+    public String getPort() {
+        return System.getProperty("snmp-port");
     }
 
     /**
@@ -44,10 +58,12 @@ public class SNMPExample implements CommandResponder {
         AbstractTransportMapping transport;
         if (address instanceof TcpAddress)
         {
+            System.out.println("Transport [tcp] on " + address);
             transport = new DefaultTcpTransportMapping((TcpAddress) address);
         }
         else
         {
+            System.out.println("Transport [udp] on " + address);
             transport = new DefaultUdpTransportMapping((UdpAddress) address);
         }
 
